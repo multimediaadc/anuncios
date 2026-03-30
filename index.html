@@ -393,7 +393,7 @@
 
       <div class="field">
         <label>Archivos <span>*</span></label>
-        <input type="file" id="archivo" accept="image/*,video/*,.mp3,.pdf" multiple onchange="actualizarLista()" />
+        <input type="file" id="archivo" accept="image/*,video/*,.mp3,.pdf" multiple />
         <div class="file-zone" id="fileZone"
           ondragover="event.preventDefault(); this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
@@ -425,7 +425,7 @@
       </div>
       <div class="toast" id="toastError">
         <div class="toast-icon">⚠️</div>
-        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
+        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="/cdn-cgi/l/email-protection#a4c9c9d1c8d0cdc9c1c0cdc58ac5c0c7e4c3c9c5cdc88ac7cbc9" style="color:#BF9A56;"><span class="__cf_email__" data-cfemail="9bf6f6eef7eff2f6fefff2fab5fafff8dbfcf6faf2f7b5f8f4f6">[email&#160;protected]</span></a></div>
       </div>
 
     </div>
@@ -460,17 +460,22 @@
     <span class="verse-ref">1 Pedro 4:10</span>
     <p class="footer-contact">
       Asamblea de Dios Central &nbsp;·&nbsp; Departamento de Multimedia<br>
-      ¿Dudas? Escríbenos a <a href="mailto:mmultimedia.adc@gmail.com">mmultimedia.adc@gmail.com</a>
+      ¿Dudas? Escríbenos a <a href="/cdn-cgi/l/email-protection#4924243c253d20242c2d202867282d2a092e24282025672a2624"><span class="__cf_email__" data-cfemail="aec3c3dbc2dac7c3cbcac7cf80cfcacdeec9c3cfc7c280cdc1c3">[email&#160;protected]</span></a>
     </p>
   </div>
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9tUj9GGZSA2_jOmQYmy-EAubpk2O4EvbmEFrjSv-EB49EWTATCph77-CaBZUQB5ba/exec";
 
-  // Mantener lista interna de archivos (permite agregar en múltiples selecciones)
   let archivosSeleccionados = [];
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('archivo').addEventListener('change', function() {
+      actualizarLista();
+    });
+  });
 
   function actualizarLista() {
     const input = document.getElementById('archivo');
@@ -608,17 +613,4 @@
         document.getElementById('hora_evento').value = '';
         document.getElementById('archivo').value = '';
         archivosSeleccionados = [];
-        renderLista();
-      }, 600);
-
-    } catch (err) {
-      document.getElementById('progressWrap').classList.remove('visible');
-      mostrarError(err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Enviar anuncio';
-    }
-  }
-</script>
-</body>
-</html>
+        r
