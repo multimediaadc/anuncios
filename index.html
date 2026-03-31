@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -59,7 +60,6 @@
     margin: 0 auto;
     padding: 56px 24px 96px;
   }
-  /* HEADER */
   .header {
     text-align: center;
     margin-top: 34px;
@@ -107,7 +107,6 @@
     max-width: 620px;
     margin: 0 auto;
   }
-  /* DEADLINE */
   .deadline {
     display: flex;
     align-items: flex-start;
@@ -123,7 +122,6 @@
   .deadline-ico { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
   .deadline-body strong { display: block; font-size: clamp(1rem, 1.7vw, 1.18rem); font-weight: 700; color: var(--gold-light); margin-bottom: 8px; }
   .deadline-body p { font-size: clamp(0.98rem, 1.6vw, 1.08rem); color: var(--text); line-height: 1.7; font-weight: 500; }
-  /* PASOS */
   .steps-label {
     font-size: 10.5px;
     font-weight: 600;
@@ -152,7 +150,6 @@
   .step-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; color: var(--gold); opacity: 0.4; line-height: 1; margin-bottom: 10px; }
   .step-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 7px; }
   .step-desc { font-size: 0.95rem; color: var(--text); line-height: 1.65; }
-  /* FORM CARD */
   .form-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -184,7 +181,7 @@
     margin-bottom: 10px;
   }
   label span { color: var(--gold); margin-left: 2px; }
-  input[type="text"], input[type="date"], input[type="time"], textarea {
+  input[type="text"], input[type="date"], input[type="time"], textarea, select {
     width: 100%;
     background: var(--card2);
     border: 1px solid rgba(255,255,255,0.07);
@@ -198,12 +195,19 @@
     outline: none;
     -webkit-appearance: none;
   }
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238AAAB8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    padding-right: 44px;
+  }
+  select option { background: #063545; color: var(--text); }
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cursor: pointer; }
-  input:focus, textarea:focus { border-color: rgba(191,154,86,0.6); box-shadow: 0 0 0 3px rgba(191,154,86,0.12); }
+  input:focus, textarea:focus, select:focus { border-color: rgba(191,154,86,0.6); box-shadow: 0 0 0 3px rgba(191,154,86,0.12); }
   textarea { resize: vertical; min-height: 130px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  /* FILE UPLOAD */
   .file-drop {
     border: 1.5px dashed rgba(191,154,86,0.3);
     border-radius: 10px;
@@ -221,13 +225,11 @@
   .file-drop strong { color: var(--gold); font-weight: 700; }
   .file-name { margin-top: 14px; font-size: 0.98rem; color: var(--gold-light); word-break: break-all; display: none; font-weight: 600; }
   .file-name.visible { display: block; }
-  /* PROGRESS */
   .progress-wrap { margin-top: 8px; display: none; }
   .progress-wrap.visible { display: block; }
   .progress-bar { width: 100%; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.3s; border-radius: 2px; }
   .progress-label { font-size: 0.88rem; color: var(--muted); margin-top: 8px; text-align: center; }
-  /* SUBMIT */
   .btn-submit {
     width: 100%;
     background: var(--gold);
@@ -250,23 +252,19 @@
   }
   .btn-submit:hover:not(:disabled) { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(191,154,86,0.3); }
   .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-  /* TOAST */
   .toast { display: none; align-items: flex-start; gap: 14px; padding: 18px 22px; border-radius: 10px; margin-top: 18px; font-size: 0.98rem; line-height: 1.7; }
   .toast.success { display: flex; background: rgba(76,175,130,0.08); border: 1px solid rgba(76,175,130,0.25); color: #7ECFAA; }
   .toast.error { display: flex; background: rgba(201,76,76,0.08); border: 1px solid rgba(201,76,76,0.25); color: #E09090; }
   .toast-icon { font-size: 1.3rem; flex-shrink: 0; }
-  /* INFO GRID */
   .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; animation: riseIn 0.9s cubic-bezier(.22,.68,0,1.2) 0.45s both; }
   .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px 22px; }
   .info-card h3 { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
   .info-card ul { list-style: none; font-size: 1rem; color: var(--text); line-height: 1.9; font-weight: 500; }
   .info-card ul li { display: flex; align-items: baseline; gap: 7px; }
   .info-card ul li::before { content: '·'; color: var(--gold); font-size: 1.2em; flex-shrink: 0; }
-  /* DIVIDER */
   .divider { display: flex; align-items: center; gap: 14px; margin: 28px 0; opacity: 0.2; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gold); }
   .divider span { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); }
-  /* FOOTER */
   .footer { text-align: center; animation: riseIn 0.9s cubic-bezier(.22,.68,0,1.2) 0.55s both; }
   .footer img { width: clamp(110px, 18vw, 160px); height: auto; opacity: 0.92; margin-bottom: 16px; filter: drop-shadow(0 6px 24px rgba(191,154,86,0.12)); }
   .verse {
@@ -350,61 +348,84 @@
     </div>
     <div class="form-body">
 
-      <div class="field">
-        <label>Nombre completo <span>*</span></label>
-        <input type="text" id="nombre" placeholder="Ej. María González" />
-      </div>
+```
+  <div class="field">
+    <label>Nombre completo <span>*</span></label>
+    <input type="text" id="nombre" placeholder="Ej. María González" />
+  </div>
 
-      <div class="field">
-        <label>Ministerio o departamento <span>*</span></label>
-        <input type="text" id="ministerio" placeholder="Ej. Jóvenes, Damas, Alabanza..." />
-      </div>
+  <div class="field">
+    <label>Ministerio o departamento <span>*</span></label>
+    <select id="ministerio">
+      <option value="">Selecciona un ministerio...</option>
+      <option value="Ministerio Femenil">Ministerio Femenil</option>
+      <option value="Ministerio Hombres de Honor">Ministerio Hombres de Honor</option>
+      <option value="Embajadores de Cristo">Embajadores de Cristo (Jóvenes)</option>
+      <option value="MDA — Ministerio de Adolescentes">MDA — Ministerio de Adolescentes</option>
+      <option value="Ministerios Infantiles">Ministerios Infantiles</option>
+      <option value="Exploradores del Rey">Exploradores del Rey</option>
+      <option value="Misioneritas">Misioneritas</option>
+      <option value="Hijos de Luz">Hijos de Luz</option>
+      <option value="Voluntarios de Jesús">Voluntarios de Jesús</option>
+      <option value="Pastoral Familiar">Pastoral Familiar</option>
+      <option value="Ministerio de Artes">Ministerio de Artes</option>
+      <option value="Ministerio de Oración">Ministerio de Oración</option>
+      <option value="Ministerio de Evangelismo">Ministerio de Evangelismo</option>
+      <option value="Ministerio de Capellanía">Ministerio de Capellanía</option>
+      <option value="Escuela Bíblica">Escuela Bíblica</option>
+      <option value="Colegio Sinaí">Colegio Sinaí</option>
+      <option value="Administración">Administración</option>
+      <option value="Otro">Otro</option>
+    </select>
+  </div>
 
-      <div class="field">
-        <label>Descripción del anuncio <span>*</span></label>
-        <textarea id="descripcion" placeholder="Describe brevemente el evento o anuncio..."></textarea>
-      </div>
+  <div class="field">
+    <label>Descripción del anuncio <span>*</span></label>
+    <textarea id="descripcion" placeholder="Describe brevemente el evento o anuncio..."></textarea>
+  </div>
 
-      <div class="field-row">
-        <div class="field">
-          <label>Fecha del evento <span>*</span></label>
-          <input type="date" id="fecha_evento" />
-        </div>
-        <div class="field">
-          <label>Hora del evento <span>*</span></label>
-          <input type="time" id="hora_evento" />
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Archivos <span>*</span></label>
-        <div class="file-drop" id="fileDrop">
-          <input type="file" id="archivo" accept="image/*,video/*,audio/*,.pdf" multiple />
-          <div class="file-icon">📎</div>
-          <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF</p>
-          <div class="file-name" id="fileName"></div>
-        </div>
-        <div class="progress-wrap" id="progressWrap">
-          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-          <div class="progress-label" id="progressLabel">Subiendo...</div>
-        </div>
-      </div>
-
-      <button class="btn-submit" id="btnSubmit" onclick="enviarFormulario()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        Enviar anuncio
-      </button>
-
-      <div class="toast" id="toastSuccess">
-        <div class="toast-icon">✅</div>
-        <div><strong>¡Enviado con éxito!</strong><br>Tu anuncio fue recibido. El equipo de multimedia lo revisará antes del domingo.</div>
-      </div>
-      <div class="toast" id="toastError">
-        <div class="toast-icon">⚠️</div>
-        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
-      </div>
-
+  <div class="field-row">
+    <div class="field">
+      <label>Fecha del evento <span>*</span></label>
+      <input type="date" id="fecha_evento" />
     </div>
+    <div class="field">
+      <label>Hora del evento <span>*</span></label>
+      <input type="time" id="hora_evento" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Archivos <span>*</span></label>
+    <div class="file-drop" id="fileDrop">
+      <input type="file" id="archivo" accept="image/*,video/*,audio/*,.pdf" multiple />
+      <div class="file-icon">📎</div>
+      <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF</p>
+      <div class="file-name" id="fileName"></div>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">Subiendo...</div>
+    </div>
+  </div>
+
+  <button class="btn-submit" id="btnSubmit" onclick="enviarFormulario()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    Enviar anuncio
+  </button>
+
+  <div class="toast" id="toastSuccess">
+    <div class="toast-icon">✅</div>
+    <div><strong>¡Enviado con éxito!</strong><br>Tu anuncio fue recibido. El equipo de multimedia lo revisará antes del domingo.</div>
+  </div>
+  <div class="toast" id="toastError">
+    <div class="toast-icon">⚠️</div>
+    <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
+  </div>
+
+</div>
+```
+
   </div>
 
   <div class="info-grid">
@@ -448,172 +469,175 @@
   const CLOSE_DAY = 4;
   const CLOSE_HOUR = 21;
 
-  function estaDentroDelHorario(now = new Date()) {
-    const day = now.getDay();
-    const hour = now.getHours();
+function estaDentroDelHorario(now = new Date()) {
+const day = now.getDay();
+const hour = now.getHours();
+if (day === OPEN_DAY) return hour >= OPEN_HOUR;
+if (day >= 1 && day <= 3) return true;
+if (day === CLOSE_DAY) return hour < CLOSE_HOUR;
+return false;
+}
 
-    if (day === OPEN_DAY) return hour >= OPEN_HOUR;
-    if (day >= 1 && day <= 3) return true;
-    if (day === CLOSE_DAY) return hour < CLOSE_HOUR;
-    return false;
-  }
+function mensajeHorarioCerrado() {
+return ‘El formulario está cerrado. Solo está disponible desde el domingo a las 2:00 PM hasta el jueves a las 9:00 PM.’;
+}
 
-  function mensajeHorarioCerrado() {
-    return 'El formulario est\u00e1 cerrado. Solo est\u00e1 disponible desde el domingo a las 2:00 PM hasta el jueves a las 9:00 PM.';
-  }
+function actualizarEstadoFormulario() {
+const abierto = estaDentroDelHorario();
+const btn = document.getElementById(‘btnSubmit’);
+const campos = [
+document.getElementById(‘nombre’),
+document.getElementById(‘ministerio’),
+document.getElementById(‘descripcion’),
+document.getElementById(‘fecha_evento’),
+document.getElementById(‘hora_evento’),
+document.getElementById(‘archivo’)
+];
 
-  function actualizarEstadoFormulario() {
-    const abierto = estaDentroDelHorario();
-    const btn = document.getElementById('btnSubmit');
-    const campos = [
-      document.getElementById('nombre'),
-      document.getElementById('ministerio'),
-      document.getElementById('descripcion'),
-      document.getElementById('fecha_evento'),
-      document.getElementById('hora_evento'),
-      document.getElementById('archivo')
-    ];
+```
+btn.disabled = !abierto;
+campos.forEach(campo => { campo.disabled = !abierto; });
 
-    btn.disabled = !abierto;
-    campos.forEach(campo => {
-      campo.disabled = !abierto;
-    });
+if (!abierto) {
+  mostrarError(mensajeHorarioCerrado());
+} else {
+  document.getElementById('toastError').classList.remove('error');
+}
+```
 
-    if (!abierto) {
-      mostrarError(mensajeHorarioCerrado());
-    } else {
-      document.getElementById('toastError').classList.remove('error');
+}
+
+function renderFileNames(files) {
+const nameEl = document.getElementById(‘fileName’);
+if (!files || files.length === 0) {
+nameEl.textContent = ‘’;
+nameEl.classList.remove(‘visible’);
+return;
+}
+const items = Array.from(files).map(file =>
+‘📄 ’ + file.name + ’ (’ + (file.size / 1024 / 1024).toFixed(2) + ’ MB)’
+);
+nameEl.innerHTML = items.join(’<br>’);
+nameEl.classList.add(‘visible’);
+}
+
+document.getElementById(‘archivo’).addEventListener(‘change’, function() {
+renderFileNames(this.files);
+});
+
+const drop = document.getElementById(‘fileDrop’);
+drop.addEventListener(‘dragover’, e => { e.preventDefault(); drop.classList.add(‘drag-over’); });
+drop.addEventListener(‘dragleave’, () => drop.classList.remove(‘drag-over’));
+drop.addEventListener(‘drop’, e => {
+e.preventDefault();
+drop.classList.remove(‘drag-over’);
+const files = e.dataTransfer.files;
+if (files && files.length > 0) {
+document.getElementById(‘archivo’).files = files;
+renderFileNames(files);
+}
+});
+
+async function enviarFormulario() {
+if (!estaDentroDelHorario()) {
+actualizarEstadoFormulario();
+return;
+}
+
+```
+const nombre       = document.getElementById('nombre').value.trim();
+const ministerio   = document.getElementById('ministerio').value;
+const descripcion  = document.getElementById('descripcion').value.trim();
+const fecha        = document.getElementById('fecha_evento').value;
+const hora         = document.getElementById('hora_evento').value;
+const archivoInput = document.getElementById('archivo');
+const archivos     = Array.from(archivoInput.files || []);
+
+if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivos.length === 0) {
+  mostrarError('Por favor completa todos los campos y sube al menos un archivo.');
+  return;
+}
+
+const btn = document.getElementById('btnSubmit');
+btn.disabled = true;
+btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
+
+document.getElementById('progressWrap').classList.add('visible');
+try {
+  for (let i = 0; i < archivos.length; i++) {
+    const archivo = archivos[i];
+    setProgress(20 + Math.round((i / archivos.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
+    const base64 = await fileToBase64(archivo);
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('ministerio', ministerio);
+    formData.append('descripcion', descripcion);
+    formData.append('fecha_evento', fecha);
+    formData.append('hora_evento', hora);
+    formData.append('archivo', base64);
+    formData.append('nombre_archivo', archivo.name);
+    formData.append('mime_type', archivo.type);
+    formData.append('total_archivos', archivos.length);
+    formData.append('indice_archivo', i + 1);
+
+    setProgress(35 + Math.round((i / archivos.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status !== 'ok') {
+      throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
     }
   }
 
-  function renderFileNames(files) {
-    const nameEl = document.getElementById('fileName');
-    if (!files || files.length === 0) {
-      nameEl.textContent = '';
-      nameEl.classList.remove('visible');
-      return;
-    }
-    const items = Array.from(files).map(file =>
-      '📄 ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)'
-    );
-    nameEl.innerHTML = items.join('<br>');
-    nameEl.classList.add('visible');
-  }
+  setProgress(100, '¡Listo!');
+  setTimeout(() => {
+    document.getElementById('progressWrap').classList.remove('visible');
+    document.getElementById('toastSuccess').classList.add('success');
+    document.getElementById('toastError').style.display = 'none';
+    document.getElementById('nombre').value = '';
+    document.getElementById('ministerio').value = '';
+    document.getElementById('descripcion').value = '';
+    document.getElementById('fecha_evento').value = '';
+    document.getElementById('hora_evento').value = '';
+    archivoInput.value = '';
+    renderFileNames([]);
+  }, 600);
+} catch (err) {
+  document.getElementById('progressWrap').classList.remove('visible');
+  mostrarError('Error: ' + err.message);
+} finally {
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Enviar anuncio';
+}
+```
 
-  document.getElementById('archivo').addEventListener('change', function() {
-    renderFileNames(this.files);
-  });
+}
 
-  const drop = document.getElementById('fileDrop');
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
-  drop.addEventListener('drop', e => {
-    e.preventDefault();
-    drop.classList.remove('drag-over');
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      document.getElementById('archivo').files = files;
-      renderFileNames(files);
-    }
-  });
+function fileToBase64(file) {
+return new Promise((resolve, reject) => {
+const reader = new FileReader();
+reader.onload = () => resolve(reader.result.split(’,’)[1]);
+reader.onerror = reject;
+reader.readAsDataURL(file);
+});
+}
 
-  async function enviarFormulario() {
-    if (!estaDentroDelHorario()) {
-      actualizarEstadoFormulario();
-      return;
-    }
+function setProgress(pct, label) {
+document.getElementById(‘progressFill’).style.width = pct + ‘%’;
+document.getElementById(‘progressLabel’).textContent = label;
+}
 
-    const nombre       = document.getElementById('nombre').value.trim();
-    const ministerio   = document.getElementById('ministerio').value.trim();
-    const descripcion  = document.getElementById('descripcion').value.trim();
-    const fecha        = document.getElementById('fecha_evento').value;
-    const hora         = document.getElementById('hora_evento').value;
-    const archivoInput = document.getElementById('archivo');
-    const archivos     = Array.from(archivoInput.files || []);
+function mostrarError(msg) {
+const t = document.getElementById(‘toastError’);
+const s = document.getElementById(‘toastSuccess’);
+document.getElementById(‘errorMsg’).innerHTML = ‘<strong>Ocurrió un error.</strong><br>’ + msg;
+t.classList.add(‘error’);
+s.classList.remove(‘success’);
+}
 
-    if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivos.length === 0) {
-      mostrarError('Por favor completa todos los campos y sube al menos un archivo.');
-      return;
-    }
-
-    const btn = document.getElementById('btnSubmit');
-    btn.disabled = true;
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
-
-    document.getElementById('progressWrap').classList.add('visible');
-    try {
-      for (let i = 0; i < archivos.length; i++) {
-        const archivo = archivos[i];
-        setProgress(20 + Math.round((i / archivos.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
-        const base64 = await fileToBase64(archivo);
-
-        const formData = new FormData();
-        formData.append('nombre', nombre);
-        formData.append('ministerio', ministerio);
-        formData.append('descripcion', descripcion);
-        formData.append('fecha_evento', fecha);
-        formData.append('hora_evento', hora);
-        formData.append('archivo', base64);
-        formData.append('nombre_archivo', archivo.name);
-        formData.append('mime_type', archivo.type);
-        formData.append('total_archivos', archivos.length);
-        formData.append('indice_archivo', i + 1);
-
-        setProgress(35 + Math.round((i / archivos.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
-        const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await res.json();
-        if (data.status !== 'ok') {
-          throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
-        }
-      }
-
-      setProgress(100, '¡Listo!');
-      setTimeout(() => {
-        document.getElementById('progressWrap').classList.remove('visible');
-        document.getElementById('toastSuccess').classList.add('success');
-        document.getElementById('toastError').style.display = 'none';
-        document.getElementById('nombre').value = '';
-        document.getElementById('ministerio').value = '';
-        document.getElementById('descripcion').value = '';
-        document.getElementById('fecha_evento').value = '';
-        document.getElementById('hora_evento').value = '';
-        archivoInput.value = '';
-        renderFileNames([]);
-      }, 600);
-    } catch (err) {
-      document.getElementById('progressWrap').classList.remove('visible');
-      mostrarError('Error: ' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Enviar anuncio';
-    }
-  }
-
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function setProgress(pct, label) {
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressLabel').textContent = label;
-  }
-
-  function mostrarError(msg) {
-    const t = document.getElementById('toastError');
-    const s = document.getElementById('toastSuccess');
-    document.getElementById('errorMsg').innerHTML = '<strong>Ocurrió un error.</strong><br>' + msg;
-    t.classList.add('error');
-    s.classList.remove('success');
-  }
-
-  actualizarEstadoFormulario();
-  setInterval(actualizarEstadoFormulario, 60000);
+actualizarEstadoFormulario();
+setInterval(actualizarEstadoFormulario, 60000);
 </script>
+
 </body>
 </html>
-
