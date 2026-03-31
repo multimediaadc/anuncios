@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -348,84 +347,82 @@
     </div>
     <div class="form-body">
 
-```
-  <div class="field">
-    <label>Nombre completo <span>*</span></label>
-    <input type="text" id="nombre" placeholder="Ej. María González" />
-  </div>
+      <div class="field">
+        <label>Nombre completo <span>*</span></label>
+        <input type="text" id="nombre" placeholder="Ej. María González" />
+      </div>
 
-  <div class="field">
-    <label>Ministerio o departamento <span>*</span></label>
-    <select id="ministerio">
-      <option value="">Selecciona un ministerio...</option>
-      <option value="Ministerio Femenil">Ministerio Femenil</option>
-      <option value="Ministerio Hombres de Honor">Ministerio Hombres de Honor</option>
-      <option value="Embajadores de Cristo">Embajadores de Cristo (Jóvenes)</option>
-      <option value="MDA — Ministerio de Adolescentes">MDA — Ministerio de Adolescentes</option>
-      <option value="Ministerios Infantiles">Ministerios Infantiles</option>
-      <option value="Exploradores del Rey">Exploradores del Rey</option>
-      <option value="Misioneritas">Misioneritas</option>
-      <option value="Hijos de Luz">Hijos de Luz</option>
-      <option value="Voluntarios de Jesús">Voluntarios de Jesús</option>
-      <option value="Pastoral Familiar">Pastoral Familiar</option>
-      <option value="Ministerio de Artes">Ministerio de Artes</option>
-      <option value="Ministerio de Oración">Ministerio de Oración</option>
-      <option value="Ministerio de Evangelismo">Ministerio de Evangelismo</option>
-      <option value="Ministerio de Capellanía">Ministerio de Capellanía</option>
-      <option value="Escuela Bíblica">Escuela Bíblica</option>
-      <option value="Colegio Sinaí">Colegio Sinaí</option>
-      <option value="Administración">Administración</option>
-      <option value="Otro">Otro</option>
-    </select>
-  </div>
+      <div class="field">
+        <label>Ministerio o departamento <span>*</span></label>
+        <select id="ministerio">
+          <option value="">Selecciona un ministerio...</option>
+          <option value="Ministerio Femenil">Ministerio Femenil</option>
+          <option value="Ministerio Hombres de Honor">Ministerio Hombres de Honor</option>
+          <option value="Embajadores de Cristo">Embajadores de Cristo</option>
+          <option value="Jóvenes de Impacto">Jóvenes de Impacto</option>
+          <option value="MDA — Ministerio de Adolescentes">MDA — Ministerio de Adolescentes</option>
+          <option value="Ministerios Infantiles">Ministerios Infantiles</option>
+          <option value="Exploradores del Rey">Exploradores del Rey</option>
+          <option value="Misioneritas">Misioneritas</option>
+          <option value="Hijos de Luz">Hijos de Luz</option>
+          <option value="Voluntarios de Jesús">Voluntarios de Jesús</option>
+          <option value="Pastoral Familiar">Pastoral Familiar</option>
+          <option value="Ministerio de Artes">Ministerio de Artes</option>
+          <option value="Ministerio de Oración">Ministerio de Oración</option>
+          <option value="Ministerio de Evangelismo">Ministerio de Evangelismo</option>
+          <option value="Ministerio de Capellanía">Ministerio de Capellanía</option>
+          <option value="Escuela Bíblica">Escuela Bíblica</option>
+          <option value="Colegio Sinaí">Colegio Sinaí</option>
+          <option value="Administración">Administración</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
 
-  <div class="field">
-    <label>Descripción del anuncio <span>*</span></label>
-    <textarea id="descripcion" placeholder="Describe brevemente el evento o anuncio..."></textarea>
-  </div>
+      <div class="field">
+        <label>Descripción del anuncio <span>*</span></label>
+        <textarea id="descripcion" placeholder="Describe brevemente el evento o anuncio..."></textarea>
+      </div>
 
-  <div class="field-row">
-    <div class="field">
-      <label>Fecha del evento <span>*</span></label>
-      <input type="date" id="fecha_evento" />
+      <div class="field-row">
+        <div class="field">
+          <label>Fecha del evento <span>*</span></label>
+          <input type="date" id="fecha_evento" />
+        </div>
+        <div class="field">
+          <label>Hora del evento <span>*</span></label>
+          <input type="time" id="hora_evento" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Archivos <span>*</span></label>
+        <div class="file-drop" id="fileDrop">
+          <input type="file" id="archivo" accept="image/*,video/*,audio/*,.pdf" multiple />
+          <div class="file-icon">📎</div>
+          <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF</p>
+          <div class="file-name" id="fileName"></div>
+        </div>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-label" id="progressLabel">Subiendo...</div>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="enviarFormulario()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        Enviar anuncio
+      </button>
+
+      <div class="toast" id="toastSuccess">
+        <div class="toast-icon">✅</div>
+        <div><strong>¡Enviado con éxito!</strong><br>Tu anuncio fue recibido. El equipo de multimedia lo revisará antes del domingo.</div>
+      </div>
+      <div class="toast" id="toastError">
+        <div class="toast-icon">⚠️</div>
+        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
+      </div>
+
     </div>
-    <div class="field">
-      <label>Hora del evento <span>*</span></label>
-      <input type="time" id="hora_evento" />
-    </div>
-  </div>
-
-  <div class="field">
-    <label>Archivos <span>*</span></label>
-    <div class="file-drop" id="fileDrop">
-      <input type="file" id="archivo" accept="image/*,video/*,audio/*,.pdf" multiple />
-      <div class="file-icon">📎</div>
-      <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF</p>
-      <div class="file-name" id="fileName"></div>
-    </div>
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-label" id="progressLabel">Subiendo...</div>
-    </div>
-  </div>
-
-  <button class="btn-submit" id="btnSubmit" onclick="enviarFormulario()">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-    Enviar anuncio
-  </button>
-
-  <div class="toast" id="toastSuccess">
-    <div class="toast-icon">✅</div>
-    <div><strong>¡Enviado con éxito!</strong><br>Tu anuncio fue recibido. El equipo de multimedia lo revisará antes del domingo.</div>
-  </div>
-  <div class="toast" id="toastError">
-    <div class="toast-icon">⚠️</div>
-    <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
-  </div>
-
-</div>
-```
-
   </div>
 
   <div class="info-grid">
@@ -469,175 +466,168 @@
   const CLOSE_DAY = 4;
   const CLOSE_HOUR = 21;
 
-function estaDentroDelHorario(now = new Date()) {
-const day = now.getDay();
-const hour = now.getHours();
-if (day === OPEN_DAY) return hour >= OPEN_HOUR;
-if (day >= 1 && day <= 3) return true;
-if (day === CLOSE_DAY) return hour < CLOSE_HOUR;
-return false;
-}
+  function estaDentroDelHorario(now = new Date()) {
+    const day = now.getDay();
+    const hour = now.getHours();
+    if (day === OPEN_DAY) return hour >= OPEN_HOUR;
+    if (day >= 1 && day <= 3) return true;
+    if (day === CLOSE_DAY) return hour < CLOSE_HOUR;
+    return false;
+  }
 
-function mensajeHorarioCerrado() {
-return ‘El formulario está cerrado. Solo está disponible desde el domingo a las 2:00 PM hasta el jueves a las 9:00 PM.’;
-}
+  function mensajeHorarioCerrado() {
+    return 'El formulario está cerrado. Solo está disponible desde el domingo a las 2:00 PM hasta el jueves a las 9:00 PM.';
+  }
 
-function actualizarEstadoFormulario() {
-const abierto = estaDentroDelHorario();
-const btn = document.getElementById(‘btnSubmit’);
-const campos = [
-document.getElementById(‘nombre’),
-document.getElementById(‘ministerio’),
-document.getElementById(‘descripcion’),
-document.getElementById(‘fecha_evento’),
-document.getElementById(‘hora_evento’),
-document.getElementById(‘archivo’)
-];
+  function actualizarEstadoFormulario() {
+    const abierto = estaDentroDelHorario();
+    const btn = document.getElementById('btnSubmit');
+    const campos = [
+      document.getElementById('nombre'),
+      document.getElementById('ministerio'),
+      document.getElementById('descripcion'),
+      document.getElementById('fecha_evento'),
+      document.getElementById('hora_evento'),
+      document.getElementById('archivo')
+    ];
 
-```
-btn.disabled = !abierto;
-campos.forEach(campo => { campo.disabled = !abierto; });
+    btn.disabled = !abierto;
+    campos.forEach(campo => { campo.disabled = !abierto; });
 
-if (!abierto) {
-  mostrarError(mensajeHorarioCerrado());
-} else {
-  document.getElementById('toastError').classList.remove('error');
-}
-```
-
-}
-
-function renderFileNames(files) {
-const nameEl = document.getElementById(‘fileName’);
-if (!files || files.length === 0) {
-nameEl.textContent = ‘’;
-nameEl.classList.remove(‘visible’);
-return;
-}
-const items = Array.from(files).map(file =>
-‘📄 ’ + file.name + ’ (’ + (file.size / 1024 / 1024).toFixed(2) + ’ MB)’
-);
-nameEl.innerHTML = items.join(’<br>’);
-nameEl.classList.add(‘visible’);
-}
-
-document.getElementById(‘archivo’).addEventListener(‘change’, function() {
-renderFileNames(this.files);
-});
-
-const drop = document.getElementById(‘fileDrop’);
-drop.addEventListener(‘dragover’, e => { e.preventDefault(); drop.classList.add(‘drag-over’); });
-drop.addEventListener(‘dragleave’, () => drop.classList.remove(‘drag-over’));
-drop.addEventListener(‘drop’, e => {
-e.preventDefault();
-drop.classList.remove(‘drag-over’);
-const files = e.dataTransfer.files;
-if (files && files.length > 0) {
-document.getElementById(‘archivo’).files = files;
-renderFileNames(files);
-}
-});
-
-async function enviarFormulario() {
-if (!estaDentroDelHorario()) {
-actualizarEstadoFormulario();
-return;
-}
-
-```
-const nombre       = document.getElementById('nombre').value.trim();
-const ministerio   = document.getElementById('ministerio').value;
-const descripcion  = document.getElementById('descripcion').value.trim();
-const fecha        = document.getElementById('fecha_evento').value;
-const hora         = document.getElementById('hora_evento').value;
-const archivoInput = document.getElementById('archivo');
-const archivos     = Array.from(archivoInput.files || []);
-
-if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivos.length === 0) {
-  mostrarError('Por favor completa todos los campos y sube al menos un archivo.');
-  return;
-}
-
-const btn = document.getElementById('btnSubmit');
-btn.disabled = true;
-btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
-
-document.getElementById('progressWrap').classList.add('visible');
-try {
-  for (let i = 0; i < archivos.length; i++) {
-    const archivo = archivos[i];
-    setProgress(20 + Math.round((i / archivos.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
-    const base64 = await fileToBase64(archivo);
-
-    const formData = new FormData();
-    formData.append('nombre', nombre);
-    formData.append('ministerio', ministerio);
-    formData.append('descripcion', descripcion);
-    formData.append('fecha_evento', fecha);
-    formData.append('hora_evento', hora);
-    formData.append('archivo', base64);
-    formData.append('nombre_archivo', archivo.name);
-    formData.append('mime_type', archivo.type);
-    formData.append('total_archivos', archivos.length);
-    formData.append('indice_archivo', i + 1);
-
-    setProgress(35 + Math.round((i / archivos.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
-    const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-    const data = await res.json();
-    if (data.status !== 'ok') {
-      throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
+    if (!abierto) {
+      mostrarError(mensajeHorarioCerrado());
+    } else {
+      document.getElementById('toastError').classList.remove('error');
     }
   }
 
-  setProgress(100, '¡Listo!');
-  setTimeout(() => {
-    document.getElementById('progressWrap').classList.remove('visible');
-    document.getElementById('toastSuccess').classList.add('success');
-    document.getElementById('toastError').style.display = 'none';
-    document.getElementById('nombre').value = '';
-    document.getElementById('ministerio').value = '';
-    document.getElementById('descripcion').value = '';
-    document.getElementById('fecha_evento').value = '';
-    document.getElementById('hora_evento').value = '';
-    archivoInput.value = '';
-    renderFileNames([]);
-  }, 600);
-} catch (err) {
-  document.getElementById('progressWrap').classList.remove('visible');
-  mostrarError('Error: ' + err.message);
-} finally {
-  btn.disabled = false;
-  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Enviar anuncio';
-}
-```
+  function renderFileNames(files) {
+    const nameEl = document.getElementById('fileName');
+    if (!files || files.length === 0) {
+      nameEl.textContent = '';
+      nameEl.classList.remove('visible');
+      return;
+    }
+    const items = Array.from(files).map(file =>
+      '📄 ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)'
+    );
+    nameEl.innerHTML = items.join('<br>');
+    nameEl.classList.add('visible');
+  }
 
-}
+  document.getElementById('archivo').addEventListener('change', function() {
+    renderFileNames(this.files);
+  });
 
-function fileToBase64(file) {
-return new Promise((resolve, reject) => {
-const reader = new FileReader();
-reader.onload = () => resolve(reader.result.split(’,’)[1]);
-reader.onerror = reject;
-reader.readAsDataURL(file);
-});
-}
+  const drop = document.getElementById('fileDrop');
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      document.getElementById('archivo').files = files;
+      renderFileNames(files);
+    }
+  });
 
-function setProgress(pct, label) {
-document.getElementById(‘progressFill’).style.width = pct + ‘%’;
-document.getElementById(‘progressLabel’).textContent = label;
-}
+  async function enviarFormulario() {
+    if (!estaDentroDelHorario()) {
+      actualizarEstadoFormulario();
+      return;
+    }
 
-function mostrarError(msg) {
-const t = document.getElementById(‘toastError’);
-const s = document.getElementById(‘toastSuccess’);
-document.getElementById(‘errorMsg’).innerHTML = ‘<strong>Ocurrió un error.</strong><br>’ + msg;
-t.classList.add(‘error’);
-s.classList.remove(‘success’);
-}
+    const nombre       = document.getElementById('nombre').value.trim();
+    const ministerio   = document.getElementById('ministerio').value;
+    const descripcion  = document.getElementById('descripcion').value.trim();
+    const fecha        = document.getElementById('fecha_evento').value;
+    const hora         = document.getElementById('hora_evento').value;
+    const archivoInput = document.getElementById('archivo');
+    const archivos     = Array.from(archivoInput.files || []);
 
-actualizarEstadoFormulario();
-setInterval(actualizarEstadoFormulario, 60000);
+    if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivos.length === 0) {
+      mostrarError('Por favor completa todos los campos y sube al menos un archivo.');
+      return;
+    }
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
+
+    document.getElementById('progressWrap').classList.add('visible');
+    try {
+      for (let i = 0; i < archivos.length; i++) {
+        const archivo = archivos[i];
+        setProgress(20 + Math.round((i / archivos.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
+        const base64 = await fileToBase64(archivo);
+
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('ministerio', ministerio);
+        formData.append('descripcion', descripcion);
+        formData.append('fecha_evento', fecha);
+        formData.append('hora_evento', hora);
+        formData.append('archivo', base64);
+        formData.append('nombre_archivo', archivo.name);
+        formData.append('mime_type', archivo.type);
+        formData.append('total_archivos', archivos.length);
+        formData.append('indice_archivo', i + 1);
+
+        setProgress(35 + Math.round((i / archivos.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
+        const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.status !== 'ok') {
+          throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
+        }
+      }
+
+      setProgress(100, '¡Listo!');
+      setTimeout(() => {
+        document.getElementById('progressWrap').classList.remove('visible');
+        document.getElementById('toastSuccess').classList.add('success');
+        document.getElementById('toastError').style.display = 'none';
+        document.getElementById('nombre').value = '';
+        document.getElementById('ministerio').value = '';
+        document.getElementById('descripcion').value = '';
+        document.getElementById('fecha_evento').value = '';
+        document.getElementById('hora_evento').value = '';
+        archivoInput.value = '';
+        renderFileNames([]);
+      }, 600);
+    } catch (err) {
+      document.getElementById('progressWrap').classList.remove('visible');
+      mostrarError('Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Enviar anuncio';
+    }
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function setProgress(pct, label) {
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = label;
+  }
+
+  function mostrarError(msg) {
+    const t = document.getElementById('toastError');
+    const s = document.getElementById('toastSuccess');
+    document.getElementById('errorMsg').innerHTML = '<strong>Ocurrió un error.</strong><br>' + msg;
+    t.classList.add('error');
+    s.classList.remove('success');
+  }
+
+  actualizarEstadoFormulario();
+  setInterval(actualizarEstadoFormulario, 60000);
 </script>
-
 </body>
 </html>
