@@ -223,7 +223,7 @@
   .file-drop p { font-size: 1rem; color: var(--text); line-height: 1.7; }
   .file-drop strong { color: var(--gold); font-weight: 700; }
 
-  /* Lista de archivos — FUERA del drop */
+  /* Lista de archivos */
   .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
   .file-item {
     display: flex;
@@ -235,9 +235,17 @@
     padding: 10px 14px;
     font-size: 0.93rem;
     gap: 10px;
+    transition: border-color 0.2s;
   }
+  .file-item.uploading { border-color: rgba(191,154,86,0.5); }
+  .file-item.done { border-color: rgba(76,175,130,0.4); background: rgba(76,175,130,0.05); }
   .file-item-name { flex: 1; text-align: left; color: var(--gold-light); font-weight: 600; word-break: break-all; }
+  .file-item.uploading .file-item-name { color: var(--text); }
+  .file-item.done .file-item-name { color: #7ECFAA; }
   .file-item-size { font-size: 0.82rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .file-item-status { font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; color: var(--muted); }
+  .file-item.uploading .file-item-status { color: var(--gold); }
+  .file-item.done .file-item-status { color: #7ECFAA; }
   .file-item-remove {
     background: none;
     border: none;
@@ -250,12 +258,30 @@
     transition: color 0.15s, background 0.15s;
   }
   .file-item-remove:hover { color: #E09090; background: rgba(201,76,76,0.12); }
+  .file-item.uploading .file-item-remove,
+  .file-item.done .file-item-remove { display: none; }
 
-  .progress-wrap { margin-top: 8px; display: none; }
+  /* Barras de progreso */
+  .progress-wrap { margin-top: 14px; display: none; }
   .progress-wrap.visible { display: block; }
-  .progress-bar { width: 100%; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.3s; border-radius: 2px; }
-  .progress-label { font-size: 0.88rem; color: var(--muted); margin-top: 8px; text-align: center; }
+
+  .progress-section { margin-bottom: 14px; }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .progress-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+  .progress-pct { font-size: 0.85rem; color: var(--gold); font-weight: 700; }
+  .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.4s ease; border-radius: 2px; }
+  .progress-fill.green { background: #4CAF82; }
+  .progress-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 5px; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .progress-fill.animating { animation: pulse 1.2s ease-in-out infinite; }
+
   .btn-submit {
     width: 100%;
     background: var(--gold);
@@ -422,9 +448,31 @@
         </div>
         <!-- Lista FUERA del drop -->
         <div class="file-list" id="fileList"></div>
+
+        <!-- Barras de progreso -->
         <div class="progress-wrap" id="progressWrap">
-          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-          <div class="progress-label" id="progressLabel">Subiendo...</div>
+          <!-- Barra archivo actual -->
+          <div class="progress-section">
+            <div class="progress-header">
+              <span class="progress-title" id="archivoActualLabel">Subiendo archivo...</span>
+              <span class="progress-pct" id="archivoActualPct">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill animating" id="progressFillArchivo" style="width:0%"></div>
+            </div>
+            <div class="progress-subtitle" id="archivoActualSub"></div>
+          </div>
+          <!-- Barra total -->
+          <div class="progress-section">
+            <div class="progress-header">
+              <span class="progress-title">Total</span>
+              <span class="progress-pct" id="totalPct">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill green" id="progressFillTotal" style="width:0%"></div>
+            </div>
+            <div class="progress-subtitle" id="totalSub"></div>
+          </div>
         </div>
       </div>
 
@@ -507,18 +555,27 @@
     return (bytes / 1024 / 1024).toFixed(2) + ' MB';
   }
 
-  function renderFileList() {
+  function renderFileList(subiendo = -1, completados = []) {
     const list = document.getElementById('fileList');
     list.innerHTML = '';
     archivosSeleccionados.forEach((file, index) => {
       const item = document.createElement('div');
-      item.className = 'file-item';
+      const isDone = completados.includes(index);
+      const isUploading = index === subiendo;
+      item.className = 'file-item' + (isUploading ? ' uploading' : '') + (isDone ? ' done' : '');
+
+      let statusText = '';
+      if (isUploading) statusText = '⬆ Subiendo...';
+      else if (isDone) statusText = '✓ Listo';
+
       item.innerHTML =
         '<span class="file-item-name">📄 ' + file.name + '</span>' +
         '<span class="file-item-size">' + formatSize(file.size) + '</span>' +
-        '<button class="file-item-remove" data-index="' + index + '">✕</button>';
+        '<span class="file-item-status">' + statusText + '</span>' +
+        (!isUploading && !isDone ? '<button class="file-item-remove" data-index="' + index + '">✕</button>' : '');
       list.appendChild(item);
     });
+
     list.querySelectorAll('.file-item-remove').forEach(btn => {
       btn.addEventListener('click', function() {
         const idx = parseInt(this.getAttribute('data-index'));
@@ -578,6 +635,20 @@
     }
   }
 
+  function setProgressArchivo(pct, nombre, sub) {
+    document.getElementById('progressFillArchivo').style.width = pct + '%';
+    document.getElementById('archivoActualPct').textContent = pct + '%';
+    if (nombre) document.getElementById('archivoActualLabel').textContent = nombre;
+    if (sub !== undefined) document.getElementById('archivoActualSub').textContent = sub;
+  }
+
+  function setProgressTotal(completados, total) {
+    const pct = Math.round((completados / total) * 100);
+    document.getElementById('progressFillTotal').style.width = pct + '%';
+    document.getElementById('totalPct').textContent = pct + '%';
+    document.getElementById('totalSub').textContent = completados + ' de ' + total + ' archivo(s) completado(s)';
+  }
+
   async function enviarFormulario() {
     if (!estaDentroDelHorario()) {
       actualizarEstadoFormulario();
@@ -600,11 +671,20 @@
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
 
     document.getElementById('progressWrap').classList.add('visible');
+    const total = archivosSeleccionados.length;
+    const completados = [];
+
     try {
-      for (let i = 0; i < archivosSeleccionados.length; i++) {
+      for (let i = 0; i < total; i++) {
         const archivo = archivosSeleccionados[i];
-        setProgress(20 + Math.round((i / archivosSeleccionados.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivosSeleccionados.length + '...');
+
+        // Actualizar UI
+        renderFileList(i, completados);
+        setProgressArchivo(10, 'Archivo ' + (i + 1) + ' de ' + total + ': ' + archivo.name, 'Leyendo...');
+        setProgressTotal(completados.length, total);
+
         const base64 = await fileToBase64(archivo);
+        setProgressArchivo(50, null, 'Subiendo al servidor...');
 
         const formData = new FormData();
         formData.append('nombre', nombre);
@@ -615,18 +695,24 @@
         formData.append('archivo', base64);
         formData.append('nombre_archivo', archivo.name);
         formData.append('mime_type', archivo.type);
-        formData.append('total_archivos', archivosSeleccionados.length);
+        formData.append('total_archivos', total);
         formData.append('indice_archivo', i + 1);
 
-        setProgress(35 + Math.round((i / archivosSeleccionados.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivosSeleccionados.length + '...');
+        setProgressArchivo(85, null, 'Guardando en Drive...');
         const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await res.json();
+
         if (data.status !== 'ok') {
           throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
         }
+
+        setProgressArchivo(100, null, '¡Completado!');
+        completados.push(i);
+        renderFileList(i + 1 < total ? i + 1 : -1, completados);
+        setProgressTotal(completados.length, total);
       }
 
-      setProgress(100, '¡Listo!');
+      // Todo listo
       setTimeout(() => {
         document.getElementById('progressWrap').classList.remove('visible');
         document.getElementById('toastSuccess').classList.add('success');
@@ -638,7 +724,8 @@
         document.getElementById('hora_evento').value = '';
         archivosSeleccionados = [];
         renderFileList();
-      }, 600);
+      }, 800);
+
     } catch (err) {
       document.getElementById('progressWrap').classList.remove('visible');
       mostrarError('Error: ' + err.message);
@@ -655,11 +742,6 @@
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  }
-
-  function setProgress(pct, label) {
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressLabel').textContent = label;
   }
 
   function mostrarError(msg) {
