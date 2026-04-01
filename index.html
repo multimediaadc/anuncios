@@ -222,8 +222,6 @@
   .file-icon { font-size: 2.2rem; margin-bottom: 12px; opacity: 0.6; }
   .file-drop p { font-size: 1rem; color: var(--text); line-height: 1.7; }
   .file-drop strong { color: var(--gold); font-weight: 700; }
-
-  /* Lista de archivos */
   .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
   .file-item {
     display: flex;
@@ -260,28 +258,16 @@
   .file-item-remove:hover { color: #E09090; background: rgba(201,76,76,0.12); }
   .file-item.uploading .file-item-remove,
   .file-item.done .file-item-remove { display: none; }
-
-  /* Barras de progreso */
   .progress-wrap { margin-top: 14px; display: none; }
   .progress-wrap.visible { display: block; }
-
   .progress-section { margin-bottom: 14px; }
-  .progress-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .progress-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
   .progress-pct { font-size: 0.85rem; color: var(--gold); font-weight: 700; }
   .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.4s ease; border-radius: 2px; }
-  .progress-fill.green { background: #4CAF82; }
+  .progress-fill { height: 100%; background: var(--gold); width: 0%; border-radius: 2px; }
+  .progress-fill.green { background: #4CAF82; transition: width 0.4s ease; }
   .progress-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 5px; }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-  .progress-fill.animating { animation: pulse 1.2s ease-in-out infinite; }
-
   .btn-submit {
     width: 100%;
     background: var(--gold);
@@ -446,23 +432,18 @@
           <div class="file-icon">📎</div>
           <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF · Máximo 50 MB por archivo</p>
         </div>
-        <!-- Lista FUERA del drop -->
         <div class="file-list" id="fileList"></div>
-
-        <!-- Barras de progreso -->
         <div class="progress-wrap" id="progressWrap">
-          <!-- Barra archivo actual -->
           <div class="progress-section">
             <div class="progress-header">
               <span class="progress-title" id="archivoActualLabel">Subiendo archivo...</span>
               <span class="progress-pct" id="archivoActualPct">0%</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill animating" id="progressFillArchivo" style="width:0%"></div>
+              <div class="progress-fill" id="progressFillArchivo" style="width:0%"></div>
             </div>
             <div class="progress-subtitle" id="archivoActualSub"></div>
           </div>
-          <!-- Barra total -->
           <div class="progress-section">
             <div class="progress-header">
               <span class="progress-title">Total</span>
@@ -487,7 +468,7 @@
       </div>
       <div class="toast" id="toastError">
         <div class="toast-icon">⚠️</div>
-        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="/cdn-cgi/l/email-protection#9df0f0e8f1e9f4f0f8f9f4fcb3fcf9feddfaf0fcf4f1b3fef2f0" style="color:#BF9A56;"><span class="__cf_email__" data-cfemail="1479796178607d7971707d753a757077547379757d783a777b79">[email&#160;protected]</span></a></div>
+        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
       </div>
 
     </div>
@@ -522,12 +503,12 @@
     <span class="verse-ref">1 Pedro 4:10</span>
     <p class="footer-contact">
       Asamblea de Dios Central La Romana &nbsp;·&nbsp; Departamento de Multimedia<br>
-      ¿Dudas? Escríbenos a <a href="/cdn-cgi/l/email-protection#7518180019011c1810111c145b141116351218141c195b161a18" style="color:#BF9A56;"><span class="__cf_email__" data-cfemail="b6dbdbc3dac2dfdbd3d2dfd798d7d2d5f6d1dbd7dfda98d5d9db">[email&#160;protected]</span></a>
+      ¿Dudas? Escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a>
     </p>
   </div>
 
 </div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbTFsX4LjB0nu-eMRR_DulU_atbHGMI5y-CoJoqbYkLDdCCr3Oy8lutuI1sokb00xv/exec";
   const MAX_FILE_SIZE = 52428800;
   const OPEN_DAY = 0;
@@ -536,6 +517,8 @@
   const CLOSE_HOUR = 21;
 
   let archivosSeleccionados = [];
+  let _progressInterval = null;
+  let _currentPct = 0;
 
   function estaDentroDelHorario(now = new Date()) {
     const day = now.getDay();
@@ -555,19 +538,19 @@
     return (bytes / 1024 / 1024).toFixed(2) + ' MB';
   }
 
-  function renderFileList(subiendo = -1, completados = []) {
+  function renderFileList(subiendo, completados) {
+    subiendo = subiendo === undefined ? -1 : subiendo;
+    completados = completados || [];
     const list = document.getElementById('fileList');
     list.innerHTML = '';
-    archivosSeleccionados.forEach((file, index) => {
+    archivosSeleccionados.forEach(function(file, index) {
       const item = document.createElement('div');
-      const isDone = completados.includes(index);
+      const isDone = completados.indexOf(index) >= 0;
       const isUploading = index === subiendo;
       item.className = 'file-item' + (isUploading ? ' uploading' : '') + (isDone ? ' done' : '');
-
       let statusText = '';
       if (isUploading) statusText = '⬆ Subiendo...';
       else if (isDone) statusText = '✓ Listo';
-
       item.innerHTML =
         '<span class="file-item-name">📄 ' + file.name + '</span>' +
         '<span class="file-item-size">' + formatSize(file.size) + '</span>' +
@@ -575,10 +558,9 @@
         (!isUploading && !isDone ? '<button class="file-item-remove" data-index="' + index + '">✕</button>' : '');
       list.appendChild(item);
     });
-
-    list.querySelectorAll('.file-item-remove').forEach(btn => {
+    list.querySelectorAll('.file-item-remove').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const idx = parseInt(this.getAttribute('data-index'));
+        var idx = parseInt(this.getAttribute('data-index'));
         archivosSeleccionados.splice(idx, 1);
         renderFileList();
       });
@@ -586,12 +568,13 @@
   }
 
   function agregarArchivos(nuevos) {
-    (Array.isArray(nuevos) ? nuevos : Array.from(nuevos)).forEach(file => {
+    var arr = Array.isArray(nuevos) ? nuevos : Array.from(nuevos);
+    arr.forEach(function(file) {
       if (file.size > MAX_FILE_SIZE) {
         mostrarError('"' + file.name + '" supera el límite de 50 MB y no puede ser enviado.');
         return;
       }
-      const existe = archivosSeleccionados.some(f => f.name === file.name && f.size === file.size);
+      var existe = archivosSeleccionados.some(function(f) { return f.name === file.name && f.size === file.size; });
       if (!existe) archivosSeleccionados.push(file);
     });
     renderFileList();
@@ -599,17 +582,16 @@
 
   document.getElementById('archivo').addEventListener('change', function() {
     if (this.files && this.files.length > 0) {
-      // Copiar a array antes de limpiar el input
-      const archivosNuevos = Array.from(this.files);
+      var archivosNuevos = Array.from(this.files);
       this.value = '';
       agregarArchivos(archivosNuevos);
     }
   });
 
-  const drop = document.getElementById('fileDrop');
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
-  drop.addEventListener('drop', e => {
+  var drop = document.getElementById('fileDrop');
+  drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', function() { drop.classList.remove('drag-over'); });
+  drop.addEventListener('drop', function(e) {
     e.preventDefault();
     drop.classList.remove('drag-over');
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -618,9 +600,9 @@
   });
 
   function actualizarEstadoFormulario() {
-    const abierto = estaDentroDelHorario();
-    const btn = document.getElementById('btnSubmit');
-    const campos = [
+    var abierto = estaDentroDelHorario();
+    var btn = document.getElementById('btnSubmit');
+    var campos = [
       document.getElementById('nombre'),
       document.getElementById('ministerio'),
       document.getElementById('descripcion'),
@@ -629,16 +611,13 @@
       document.getElementById('archivo')
     ];
     btn.disabled = !abierto;
-    campos.forEach(campo => { campo.disabled = !abierto; });
+    campos.forEach(function(campo) { campo.disabled = !abierto; });
     if (!abierto) {
       mostrarError(mensajeHorarioCerrado());
     } else {
       document.getElementById('toastError').classList.remove('error');
     }
   }
-
-  let _progressInterval = null;
-  let _currentPct = 0;
 
   function resetBarraArchivo(nombre) {
     if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
@@ -652,16 +631,16 @@
   function animarHasta85(sub) {
     if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
     if (sub !== undefined) document.getElementById('archivoActualSub').textContent = sub;
-    _progressInterval = setInterval(() => {
+    _progressInterval = setInterval(function() {
       if (_currentPct >= 85) {
         clearInterval(_progressInterval);
         _progressInterval = null;
         return;
       }
-      const restante = 85 - _currentPct;
-      const paso = Math.max(0.25, restante * 0.025);
+      var restante = 85 - _currentPct;
+      var paso = Math.max(0.25, restante * 0.025);
       _currentPct = Math.min(85, _currentPct + paso);
-      const pctInt = Math.floor(_currentPct);
+      var pctInt = Math.floor(_currentPct);
       document.getElementById('progressFillArchivo').style.width = pctInt + '%';
       document.getElementById('archivoActualPct').textContent = pctInt + '%';
     }, 60);
@@ -670,7 +649,7 @@
   function animarHasta100(sub, cb) {
     if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
     if (sub !== undefined) document.getElementById('archivoActualSub').textContent = sub;
-    _progressInterval = setInterval(() => {
+    _progressInterval = setInterval(function() {
       if (_currentPct >= 100) {
         clearInterval(_progressInterval);
         _progressInterval = null;
@@ -686,51 +665,45 @@
   }
 
   function setProgressTotal(completados, total) {
-    const pct = Math.round((completados / total) * 100);
+    var pct = Math.round((completados / total) * 100);
     document.getElementById('progressFillTotal').style.width = pct + '%';
     document.getElementById('totalPct').textContent = pct + '%';
     document.getElementById('totalSub').textContent = completados + ' de ' + total + ' archivo(s) completado(s)';
   }
 
   async function enviarFormulario() {
-    if (!estaDentroDelHorario()) {
-      actualizarEstadoFormulario();
-      return;
-    }
+    if (!estaDentroDelHorario()) { actualizarEstadoFormulario(); return; }
 
-    const nombre      = document.getElementById('nombre').value.trim();
-    const ministerio  = document.getElementById('ministerio').value;
-    const descripcion = document.getElementById('descripcion').value.trim();
-    const fecha       = document.getElementById('fecha_evento').value;
-    const hora        = document.getElementById('hora_evento').value;
+    var nombre      = document.getElementById('nombre').value.trim();
+    var ministerio  = document.getElementById('ministerio').value;
+    var descripcion = document.getElementById('descripcion').value.trim();
+    var fecha       = document.getElementById('fecha_evento').value;
+    var hora        = document.getElementById('hora_evento').value;
 
     if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivosSeleccionados.length === 0) {
       mostrarError('Por favor completa todos los campos y sube al menos un archivo.');
       return;
     }
 
-    const btn = document.getElementById('btnSubmit');
+    var btn = document.getElementById('btnSubmit');
     btn.disabled = true;
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
-
     document.getElementById('progressWrap').classList.add('visible');
-    const total = archivosSeleccionados.length;
-    const completados = [];
+
+    var total = archivosSeleccionados.length;
+    var completados = [];
 
     try {
-      for (let i = 0; i < total; i++) {
-        const archivo = archivosSeleccionados[i];
-
-        // Actualizar UI
+      for (var i = 0; i < total; i++) {
+        var archivo = archivosSeleccionados[i];
         renderFileList(i, completados);
         resetBarraArchivo('Archivo ' + (i + 1) + ' de ' + total + ': ' + archivo.name);
         setProgressTotal(completados.length, total);
 
-        // Leer archivo y arrancar animación gradual hasta 85%
-        const base64 = await fileToBase64(archivo);
+        var base64 = await fileToBase64(archivo);
         animarHasta85('Subiendo al servidor...');
 
-        const formData = new FormData();
+        var formData = new FormData();
         formData.append('nombre', nombre);
         formData.append('ministerio', ministerio);
         formData.append('descripcion', descripcion);
@@ -742,24 +715,19 @@
         formData.append('total_archivos', total);
         formData.append('indice_archivo', i + 1);
 
-        // Fetch corre en paralelo con la animación
-        const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await res.json();
+        var res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        var data = await res.json();
 
-        if (data.status !== 'ok') {
-          throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
-        }
+        if (data.status !== 'ok') throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
 
-        // Servidor confirmó — subir rápido de 85 a 100
-        await new Promise(resolve => animarHasta100('Guardando en Drive...', resolve));
+        await new Promise(function(resolve) { animarHasta100('Guardando en Drive...', resolve); });
 
         completados.push(i);
         renderFileList(i + 1 < total ? i + 1 : -1, completados);
         setProgressTotal(completados.length, total);
       }
 
-      // Todo listo
-      setTimeout(() => {
+      setTimeout(function() {
         document.getElementById('progressWrap').classList.remove('visible');
         document.getElementById('toastSuccess').classList.add('success');
         document.getElementById('toastError').style.display = 'none';
@@ -782,12 +750,24 @@
   }
 
   function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() { resolve(reader.result.split(',')[1]); };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
-  function mostr
+  function mostrarError(msg) {
+    var t = document.getElementById('toastError');
+    var s = document.getElementById('toastSuccess');
+    document.getElementById('errorMsg').innerHTML = '<strong>Ocurrió un error.</strong><br>' + msg;
+    t.classList.add('error');
+    s.classList.remove('success');
+  }
+
+  actualizarEstadoFormulario();
+  setInterval(actualizarEstadoFormulario, 60000);
+</script>
+</body>
+</html>
