@@ -487,7 +487,7 @@
       </div>
       <div class="toast" id="toastError">
         <div class="toast-icon">⚠️</div>
-        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a></div>
+        <div id="errorMsg"><strong>Ocurrió un error.</strong><br>Por favor intenta de nuevo o escríbenos a <a href="/cdn-cgi/l/email-protection#9df0f0e8f1e9f4f0f8f9f4fcb3fcf9feddfaf0fcf4f1b3fef2f0" style="color:#BF9A56;"><span class="__cf_email__" data-cfemail="1479796178607d7971707d753a757077547379757d783a777b79">[email&#160;protected]</span></a></div>
       </div>
 
     </div>
@@ -522,12 +522,12 @@
     <span class="verse-ref">1 Pedro 4:10</span>
     <p class="footer-contact">
       Asamblea de Dios Central La Romana &nbsp;·&nbsp; Departamento de Multimedia<br>
-      ¿Dudas? Escríbenos a <a href="mailto:mmultimedia.adc@gmail.com" style="color:#BF9A56;">mmultimedia.adc@gmail.com</a>
+      ¿Dudas? Escríbenos a <a href="/cdn-cgi/l/email-protection#7518180019011c1810111c145b141116351218141c195b161a18" style="color:#BF9A56;"><span class="__cf_email__" data-cfemail="b6dbdbc3dac2dfdbd3d2dfd798d7d2d5f6d1dbd7dfda98d5d9db">[email&#160;protected]</span></a>
     </p>
   </div>
 
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbTFsX4LjB0nu-eMRR_DulU_atbHGMI5y-CoJoqbYkLDdCCr3Oy8lutuI1sokb00xv/exec";
   const MAX_FILE_SIZE = 52428800;
   const OPEN_DAY = 0;
@@ -635,11 +635,52 @@
     }
   }
 
-  function setProgressArchivo(pct, nombre, sub) {
-    document.getElementById('progressFillArchivo').style.width = pct + '%';
-    document.getElementById('archivoActualPct').textContent = pct + '%';
+  let _progressInterval = null;
+  let _currentPct = 0;
+
+  function resetBarraArchivo(nombre) {
+    if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
+    _currentPct = 0;
+    document.getElementById('progressFillArchivo').style.width = '0%';
+    document.getElementById('archivoActualPct').textContent = '0%';
     if (nombre) document.getElementById('archivoActualLabel').textContent = nombre;
+    document.getElementById('archivoActualSub').textContent = 'Preparando...';
+  }
+
+  function animarHasta85(sub) {
+    if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
     if (sub !== undefined) document.getElementById('archivoActualSub').textContent = sub;
+    _progressInterval = setInterval(() => {
+      if (_currentPct >= 85) {
+        clearInterval(_progressInterval);
+        _progressInterval = null;
+        return;
+      }
+      const restante = 85 - _currentPct;
+      const paso = Math.max(0.25, restante * 0.025);
+      _currentPct = Math.min(85, _currentPct + paso);
+      const pctInt = Math.floor(_currentPct);
+      document.getElementById('progressFillArchivo').style.width = pctInt + '%';
+      document.getElementById('archivoActualPct').textContent = pctInt + '%';
+    }, 60);
+  }
+
+  function animarHasta100(sub, cb) {
+    if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
+    if (sub !== undefined) document.getElementById('archivoActualSub').textContent = sub;
+    _progressInterval = setInterval(() => {
+      if (_currentPct >= 100) {
+        clearInterval(_progressInterval);
+        _progressInterval = null;
+        document.getElementById('progressFillArchivo').style.width = '100%';
+        document.getElementById('archivoActualPct').textContent = '100%';
+        if (cb) cb();
+        return;
+      }
+      _currentPct = Math.min(100, _currentPct + 2);
+      document.getElementById('progressFillArchivo').style.width = _currentPct + '%';
+      document.getElementById('archivoActualPct').textContent = Math.floor(_currentPct) + '%';
+    }, 20);
   }
 
   function setProgressTotal(completados, total) {
@@ -680,11 +721,12 @@
 
         // Actualizar UI
         renderFileList(i, completados);
-        setProgressArchivo(10, 'Archivo ' + (i + 1) + ' de ' + total + ': ' + archivo.name, 'Leyendo...');
+        resetBarraArchivo('Archivo ' + (i + 1) + ' de ' + total + ': ' + archivo.name);
         setProgressTotal(completados.length, total);
 
+        // Leer archivo y arrancar animación gradual hasta 85%
         const base64 = await fileToBase64(archivo);
-        setProgressArchivo(50, null, 'Subiendo al servidor...');
+        animarHasta85('Subiendo al servidor...');
 
         const formData = new FormData();
         formData.append('nombre', nombre);
@@ -698,7 +740,7 @@
         formData.append('total_archivos', total);
         formData.append('indice_archivo', i + 1);
 
-        setProgressArchivo(85, null, 'Guardando en Drive...');
+        // Fetch corre en paralelo con la animación
         const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await res.json();
 
@@ -706,7 +748,9 @@
           throw new Error(data.mensaje || ('Error en archivo: ' + archivo.name));
         }
 
-        setProgressArchivo(100, null, '¡Completado!');
+        // Servidor confirmó — subir rápido de 85 a 100
+        await new Promise(resolve => animarHasta100('Guardando en Drive...', resolve));
+
         completados.push(i);
         renderFileList(i + 1 < total ? i + 1 : -1, completados);
         setProgressTotal(completados.length, total);
@@ -744,16 +788,4 @@
     });
   }
 
-  function mostrarError(msg) {
-    const t = document.getElementById('toastError');
-    const s = document.getElementById('toastSuccess');
-    document.getElementById('errorMsg').innerHTML = '<strong>Ocurrió un error.</strong><br>' + msg;
-    t.classList.add('error');
-    s.classList.remove('success');
-  }
-
-  actualizarEstadoFormulario();
-  setInterval(actualizarEstadoFormulario, 60000);
-</script>
-</body>
-</html>
+  function mostr
