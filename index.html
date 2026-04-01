@@ -347,8 +347,8 @@
   <div class="deadline">
     <div class="deadline-ico">⏰</div>
     <div class="deadline-body">
-      <strong>Horario de envío: Domingo 2:00 PM hasta Jueves 9:00 PM</strong>
-      <p>Después del jueves a las 9:00 PM el formulario se cierra y vuelve a abrir el domingo a las 2:00 PM.</p>
+      <strong>Horario de envío: Domingo 2:00 PM hasta viernes 11:59 PM</strong>
+      <p>Después del viernes a las 11:59 PM el formulario se cierra y vuelve a abrir el domingo a las 2:00 PM.</p>
     </div>
   </div>
 
@@ -513,8 +513,8 @@
   const MAX_FILE_SIZE = 52428800;
   const OPEN_DAY = 0;
   const OPEN_HOUR = 14;
-  const CLOSE_DAY = 4;
-  const CLOSE_HOUR = 21;
+  const CLOSE_DAY = 5;
+  const CLOSE_HOUR = 24;
 
   let archivosSeleccionados = [];
   let _progressInterval = null;
@@ -530,7 +530,7 @@
   }
 
   function mensajeHorarioCerrado() {
-    return 'El formulario está cerrado. Solo está disponible desde el domingo a las 2:00 PM hasta el jueves a las 9:00 PM.';
+    return 'El formulario está cerrado. Solo está disponible desde el domingo a las 2:00 PM hasta el viernes a las 11:59 PM.';
   }
 
   function formatSize(bytes) {
