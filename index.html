@@ -222,8 +222,35 @@
   .file-icon { font-size: 2.2rem; margin-bottom: 12px; opacity: 0.6; }
   .file-drop p { font-size: 1rem; color: var(--text); line-height: 1.7; }
   .file-drop strong { color: var(--gold); font-weight: 700; }
-  .file-name { margin-top: 14px; font-size: 0.98rem; color: var(--gold-light); word-break: break-all; display: none; font-weight: 600; }
-  .file-name.visible { display: block; }
+
+  /* Lista de archivos — FUERA del drop */
+  .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(191,154,86,0.07);
+    border: 1px solid rgba(191,154,86,0.18);
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-size: 0.93rem;
+    gap: 10px;
+  }
+  .file-item-name { flex: 1; text-align: left; color: var(--gold-light); font-weight: 600; word-break: break-all; }
+  .file-item-size { font-size: 0.82rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .file-item-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: color 0.15s, background 0.15s;
+  }
+  .file-item-remove:hover { color: #E09090; background: rgba(201,76,76,0.12); }
+
   .progress-wrap { margin-top: 8px; display: none; }
   .progress-wrap.visible { display: block; }
   .progress-bar { width: 100%; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
@@ -392,8 +419,9 @@
           <input type="file" id="archivo" accept="image/*,video/*,audio/*,.pdf" multiple />
           <div class="file-icon">📎</div>
           <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF · Máximo 50 MB por archivo</p>
-          <div class="file-name" id="fileName"></div>
         </div>
+        <!-- Lista FUERA del drop -->
+        <div class="file-list" id="fileList"></div>
         <div class="progress-wrap" id="progressWrap">
           <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
           <div class="progress-label" id="progressLabel">Subiendo...</div>
@@ -459,6 +487,8 @@
   const CLOSE_DAY = 4;
   const CLOSE_HOUR = 21;
 
+  let archivosSeleccionados = [];
+
   function estaDentroDelHorario(now = new Date()) {
     const day = now.getDay();
     const hour = now.getHours();
@@ -471,6 +501,62 @@
   function mensajeHorarioCerrado() {
     return 'El formulario está cerrado. Solo está disponible desde el domingo a las 2:00 PM hasta el jueves a las 9:00 PM.';
   }
+
+  function formatSize(bytes) {
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+  }
+
+  function renderFileList() {
+    const list = document.getElementById('fileList');
+    list.innerHTML = '';
+    archivosSeleccionados.forEach((file, index) => {
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.innerHTML =
+        '<span class="file-item-name">📄 ' + file.name + '</span>' +
+        '<span class="file-item-size">' + formatSize(file.size) + '</span>' +
+        '<button class="file-item-remove" data-index="' + index + '">✕</button>';
+      list.appendChild(item);
+    });
+    list.querySelectorAll('.file-item-remove').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-index'));
+        archivosSeleccionados.splice(idx, 1);
+        renderFileList();
+      });
+    });
+  }
+
+  function agregarArchivos(nuevos) {
+    Array.from(nuevos).forEach(file => {
+      if (file.size > MAX_FILE_SIZE) {
+        mostrarError('"' + file.name + '" supera el límite de 50 MB y no puede ser enviado.');
+        return;
+      }
+      const existe = archivosSeleccionados.some(f => f.name === file.name && f.size === file.size);
+      if (!existe) archivosSeleccionados.push(file);
+    });
+    renderFileList();
+  }
+
+  document.getElementById('archivo').addEventListener('change', function() {
+    if (this.files && this.files.length > 0) {
+      agregarArchivos(this.files);
+      this.value = '';
+    }
+  });
+
+  const drop = document.getElementById('fileDrop');
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      agregarArchivos(e.dataTransfer.files);
+    }
+  });
 
   function actualizarEstadoFormulario() {
     const abierto = estaDentroDelHorario();
@@ -492,60 +578,19 @@
     }
   }
 
-  function renderFileNames(files) {
-    const nameEl = document.getElementById('fileName');
-    if (!files || files.length === 0) {
-      nameEl.textContent = '';
-      nameEl.classList.remove('visible');
-      return;
-    }
-    const oversized = Array.from(files).filter(f => f.size > MAX_FILE_SIZE);
-    if (oversized.length > 0) {
-      mostrarError('"' + oversized[0].name + '" supera el límite de 50 MB y no puede ser enviado.');
-      nameEl.textContent = '';
-      nameEl.classList.remove('visible');
-      document.getElementById('archivo').value = '';
-      return;
-    }
-    const items = Array.from(files).map(file =>
-      '📄 ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)'
-    );
-    nameEl.innerHTML = items.join('<br>');
-    nameEl.classList.add('visible');
-  }
-
-  document.getElementById('archivo').addEventListener('change', function() {
-    renderFileNames(this.files);
-  });
-
-  const drop = document.getElementById('fileDrop');
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
-  drop.addEventListener('drop', e => {
-    e.preventDefault();
-    drop.classList.remove('drag-over');
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      document.getElementById('archivo').files = files;
-      renderFileNames(files);
-    }
-  });
-
   async function enviarFormulario() {
     if (!estaDentroDelHorario()) {
       actualizarEstadoFormulario();
       return;
     }
 
-    const nombre       = document.getElementById('nombre').value.trim();
-    const ministerio   = document.getElementById('ministerio').value;
-    const descripcion  = document.getElementById('descripcion').value.trim();
-    const fecha        = document.getElementById('fecha_evento').value;
-    const hora         = document.getElementById('hora_evento').value;
-    const archivoInput = document.getElementById('archivo');
-    const archivos     = Array.from(archivoInput.files || []);
+    const nombre      = document.getElementById('nombre').value.trim();
+    const ministerio  = document.getElementById('ministerio').value;
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const fecha       = document.getElementById('fecha_evento').value;
+    const hora        = document.getElementById('hora_evento').value;
 
-    if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivos.length === 0) {
+    if (!nombre || !ministerio || !descripcion || !fecha || !hora || archivosSeleccionados.length === 0) {
       mostrarError('Por favor completa todos los campos y sube al menos un archivo.');
       return;
     }
@@ -556,9 +601,9 @@
 
     document.getElementById('progressWrap').classList.add('visible');
     try {
-      for (let i = 0; i < archivos.length; i++) {
-        const archivo = archivos[i];
-        setProgress(20 + Math.round((i / archivos.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
+      for (let i = 0; i < archivosSeleccionados.length; i++) {
+        const archivo = archivosSeleccionados[i];
+        setProgress(20 + Math.round((i / archivosSeleccionados.length) * 55), 'Leyendo archivo ' + (i + 1) + ' de ' + archivosSeleccionados.length + '...');
         const base64 = await fileToBase64(archivo);
 
         const formData = new FormData();
@@ -570,10 +615,10 @@
         formData.append('archivo', base64);
         formData.append('nombre_archivo', archivo.name);
         formData.append('mime_type', archivo.type);
-        formData.append('total_archivos', archivos.length);
+        formData.append('total_archivos', archivosSeleccionados.length);
         formData.append('indice_archivo', i + 1);
 
-        setProgress(35 + Math.round((i / archivos.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivos.length + '...');
+        setProgress(35 + Math.round((i / archivosSeleccionados.length) * 55), 'Subiendo archivo ' + (i + 1) + ' de ' + archivosSeleccionados.length + '...');
         const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await res.json();
         if (data.status !== 'ok') {
@@ -591,8 +636,8 @@
         document.getElementById('descripcion').value = '';
         document.getElementById('fecha_evento').value = '';
         document.getElementById('hora_evento').value = '';
-        archivoInput.value = '';
-        renderFileNames([]);
+        archivosSeleccionados = [];
+        renderFileList();
       }, 600);
     } catch (err) {
       document.getElementById('progressWrap').classList.remove('visible');
