@@ -586,7 +586,7 @@
   }
 
   function agregarArchivos(nuevos) {
-    Array.from(nuevos).forEach(file => {
+    (Array.isArray(nuevos) ? nuevos : Array.from(nuevos)).forEach(file => {
       if (file.size > MAX_FILE_SIZE) {
         mostrarError('"' + file.name + '" supera el límite de 50 MB y no puede ser enviado.');
         return;
@@ -599,8 +599,10 @@
 
   document.getElementById('archivo').addEventListener('change', function() {
     if (this.files && this.files.length > 0) {
-      agregarArchivos(this.files);
+      // Copiar a array antes de limpiar el input
+      const archivosNuevos = Array.from(this.files);
       this.value = '';
+      agregarArchivos(archivosNuevos);
     }
   });
 
