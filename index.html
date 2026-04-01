@@ -430,7 +430,7 @@
         <div class="file-drop" id="fileDrop">
           <input type="file" id="archivo" accept="image/*,video/*,audio/*,.pdf" multiple />
           <div class="file-icon">📎</div>
-          <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF · Máximo 50 MB por archivo</p>
+          <p><strong>Haz clic o arrastra tus archivos aquí</strong><br>Imágenes, videos, audios o PDF · Máximo 37 MB por archivo</p>
         </div>
         <div class="file-list" id="fileList"></div>
         <div class="progress-wrap" id="progressWrap">
@@ -510,7 +510,7 @@
 </div>
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbTFsX4LjB0nu-eMRR_DulU_atbHGMI5y-CoJoqbYkLDdCCr3Oy8lutuI1sokb00xv/exec";
-  const MAX_FILE_SIZE = 52428800;
+  const MAX_FILE_SIZE = 38797312;
   const OPEN_DAY = 0;
   const OPEN_HOUR = 14;
   const CLOSE_DAY = 5;
@@ -571,7 +571,7 @@
     var arr = Array.isArray(nuevos) ? nuevos : Array.from(nuevos);
     arr.forEach(function(file) {
       if (file.size > MAX_FILE_SIZE) {
-        mostrarError('"' + file.name + '" supera el límite de 50 MB y no puede ser enviado.');
+        mostrarError('"' + file.name + '" supera el límite de 37 MB y no puede ser enviado.');
         return;
       }
       var existe = archivosSeleccionados.some(function(f) { return f.name === file.name && f.size === file.size; });
