@@ -516,13 +516,35 @@
   const CLOSE_DAY = 5;
   const CLOSE_HOUR = 24;
 
-  let archivosSeleccionados = [];
-  let _progressInterval = null;
-  let _currentPct = 0;
+  var archivosSeleccionados = [];
+  var _progressInterval = null;
+  var _currentPct = 0;
 
-  function estaDentroDelHorario(now = new Date()) {
-    const day = now.getDay();
-    const hour = now.getHours();
+  // ── Detección de dispositivo ──────────────────────────────
+  function detectarDispositivo() {
+    var ua = navigator.userAgent || '';
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+    return isMobile ? 'Móvil' : 'Desktop';
+  }
+
+  // ── Calcular peso total y tipos únicos de archivos ────────
+  function calcularMetadatosArchivos() {
+    var totalBytes = archivosSeleccionados.reduce(function(acc, f) { return acc + f.size; }, 0);
+    var tiposUnicos = [];
+    archivosSeleccionados.forEach(function(f) {
+      var mime = f.type || 'application/octet-stream';
+      if (tiposUnicos.indexOf(mime) === -1) tiposUnicos.push(mime);
+    });
+    return {
+      pesoTotalBytes: totalBytes,
+      tiposArchivo: tiposUnicos.join(', ')
+    };
+  }
+
+  function estaDentroDelHorario(now) {
+    now = now || new Date();
+    var day = now.getDay();
+    var hour = now.getHours();
     if (day === OPEN_DAY) return hour >= OPEN_HOUR;
     if (day >= 1 && day <= 4) return true;
     if (day === CLOSE_DAY) return hour < CLOSE_HOUR;
@@ -541,14 +563,14 @@
   function renderFileList(subiendo, completados) {
     subiendo = subiendo === undefined ? -1 : subiendo;
     completados = completados || [];
-    const list = document.getElementById('fileList');
+    var list = document.getElementById('fileList');
     list.innerHTML = '';
     archivosSeleccionados.forEach(function(file, index) {
-      const item = document.createElement('div');
-      const isDone = completados.indexOf(index) >= 0;
-      const isUploading = index === subiendo;
+      var item = document.createElement('div');
+      var isDone = completados.indexOf(index) >= 0;
+      var isUploading = index === subiendo;
       item.className = 'file-item' + (isUploading ? ' uploading' : '') + (isDone ? ' done' : '');
-      let statusText = '';
+      var statusText = '';
       if (isUploading) statusText = '⬆ Subiendo...';
       else if (isDone) statusText = '✓ Listo';
       item.innerHTML =
@@ -685,6 +707,10 @@
       return;
     }
 
+    // ── Calcular metadatos antes de enviar ────────────────────
+    var meta = calcularMetadatosArchivos();
+    var dispositivo = detectarDispositivo();
+
     var btn = document.getElementById('btnSubmit');
     btn.disabled = true;
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg> Enviando...';
@@ -714,6 +740,10 @@
         formData.append('mime_type', archivo.type);
         formData.append('total_archivos', total);
         formData.append('indice_archivo', i + 1);
+        // ── Campos nuevos ──────────────────────────────────────
+        formData.append('peso_total_bytes', meta.pesoTotalBytes);
+        formData.append('tipos_archivo', meta.tiposArchivo);
+        formData.append('dispositivo', dispositivo);
 
         var res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         var data = await res.json();
