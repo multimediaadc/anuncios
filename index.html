@@ -524,7 +524,7 @@
     const day = now.getDay();
     const hour = now.getHours();
     if (day === OPEN_DAY) return hour >= OPEN_HOUR;
-    if (day >= 1 && day <= 3) return true;
+    if (day >= 1 && day <= 4) return true;
     if (day === CLOSE_DAY) return hour < CLOSE_HOUR;
     return false;
   }
